@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - testing
+  schedule:
+    - cron: "0 0 * * *"  # Nightly runs at midnight UTC
 
 jobs:
   build-and-test:
@@ -25,7 +27,10 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install flake8
 
-      - name: Run tests
-        run: |
-          python -m unittest discover -s test
+      - name: Run flake8 (Linting)
+        run: flake8 app.py tests/test_app.py --max-line-length=120
+
+      - name: Run pytest (Testing)
+        run: pytest
