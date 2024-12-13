@@ -24,31 +24,24 @@ def write_users(users):
 
 
 # API Endpoints
-
 @app.route("/add_user", methods=["POST"])
 def add_user():
     data = request.get_json()
     email = data.get("email")
     age = data.get("age")
 
-    print(f"Received data for add: {data}")  # Debugging
-    print(f"Existing users: {read_users()}")  # Debugging
-
     if not email or not age:
         return jsonify({"error": "Email and age are required!"}), 400
 
     users = read_users()
     if any(user["email"] == email for user in users):
-        print(f"Duplicate user found: {email}")  # Debugging
         return jsonify({"error": "User already exists!"}), 400
 
     new_user = {"email": email, "age": age}
     users.append(new_user)
     write_users(users)
 
-    print(f"User added: {new_user}")  # Debugging
     return jsonify({"message": "User added successfully!", "user": new_user}), 201
-
 
 
 @app.route("/get_user", methods=["GET"])
@@ -71,9 +64,6 @@ def update_user():
     email = data.get("email")
     age = data.get("age")
 
-    print(f"Received data for update: {data}")  # Debugging
-    print(f"Existing users: {read_users()}")  # Debugging
-
     if not email or not age:
         return jsonify({"error": "Email and age are required!"}), 400
 
@@ -82,12 +72,9 @@ def update_user():
         if user["email"] == email:
             user["age"] = age
             write_users(users)
-            print(f"User updated: {user}")  # Debugging
             return jsonify({"message": "User updated successfully!", "user": user})
 
-    print(f"No user found with email: {email}")  # Debugging
     return jsonify({"error": "User not found!"}), 404
-
 
 
 @app.route("/delete_user", methods=["DELETE"])
